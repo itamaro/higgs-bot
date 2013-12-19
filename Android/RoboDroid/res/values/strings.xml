@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RoboDroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="play_button">Play</string>
+    <string name="msgLabel">Push Play</string>
+    <string name="amp_label">Amplitude</string>
+
+</resources>
