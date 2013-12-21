@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+    <com.higgsbot.robodrive.JoystickView
+        android:id="@+id/armSpeedCtrl"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dip" />
+
+        <TableLayout android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dip">
+                
+                        <TextView
+                            android:layout_width="50dip"
+                            android:layout_height="wrap_content"
+                            android:text="@string/arm_speed_label" >
+</TextView>
+                        <TextView android:text="" android:id="@+id/armSpeed"
+                                android:layout_height="wrap_content"></TextView>
+                
+        </TableLayout>
+
+</LinearLayout>

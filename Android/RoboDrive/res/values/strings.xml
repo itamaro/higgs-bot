@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RoboDrive</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_dual_joystick">HiggsBot Driver</string>
+    <string name="y_val_label">Value</string>
+    <string name="title_activity_arm_control">HiggsBot Arm Control</string>
+    <string name="arm_speed_label">Arm Speed</string>
+    <string name="arm_ctrl_label">Arm Control</string>
+    <string name="drive_label">Driver</string>
+
+</resources>
