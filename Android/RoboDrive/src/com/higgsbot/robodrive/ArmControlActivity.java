@@ -7,7 +7,9 @@ import android.view.Menu;
 import android.widget.TextView;
 
 public class ArmControlActivity extends Activity {
-	
+	public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
+	public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
+	 
 	TextView txtArmSpeed;
 	JoystickView armSpeedCtrl;
 	int armSpeed;
