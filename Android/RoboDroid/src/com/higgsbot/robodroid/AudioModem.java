@@ -7,9 +7,9 @@ import android.media.AudioTrack;
 public class AudioModem {
 
     private int buffSize = 12800 / 2;	// in shorts!
-    private double toneFreq = 441.;
+    private double toneFreq = 2*441.;
     private int sampleRate = 44100;
-    private short audioBase[];
+    private short audioRef[];
     private short audioHigh[];
     private short audioLow[];
 	
@@ -28,9 +28,9 @@ public class AudioModem {
     }
     
     private void initAudioData() {
-    	audioBase = generatePaddedSineCycle(3000, toneFreq, sampleRate, 0, 0);
-    	audioHigh = generatePaddedSineCycle(6000, toneFreq, sampleRate, 0, 0);
-    	audioLow = generatePaddedSineCycle(2000, toneFreq, sampleRate, 0, 0);
+    	audioRef = generatePaddedSineCycle(6000, toneFreq, sampleRate, 0, 0);
+    	audioHigh = generatePaddedSineCycle(8000, toneFreq, sampleRate, 0, 0);
+    	audioLow = generatePaddedSineCycle(4000, toneFreq, sampleRate, 0, 0);
     }
     
     private static Boolean isBitSet(byte b, int bit) {
@@ -38,9 +38,9 @@ public class AudioModem {
     }
     
     private void sendByteToArduino(byte byte_to_send, AudioTrack audioTrack) {
-    	byte_to_send = (byte) (((byte_to_send & 0x0F) << 4) | ((byte_to_send & 0xF0) >> 4));
+    	//byte_to_send = (byte) (((byte_to_send & 0x0F) << 4) | ((byte_to_send & 0xF0) >> 4));
     	for (int bit=0; bit < 8; ++bit) {
-    		audioTrack.write(audioBase, 0, audioBase.length);
+    		audioTrack.write(audioRef, 0, audioRef.length);
     		if (isBitSet(byte_to_send, bit)) {
     			audioTrack.write(audioHigh, 0, audioHigh.length);
     		} else {
@@ -50,8 +50,8 @@ public class AudioModem {
     }
     
     public void sendData(final char data[]) {
-    	assert audioBase.length == audioHigh.length;
-    	assert audioBase.length == audioLow.length;
+    	assert audioRef.length == audioHigh.length;
+    	assert audioRef.length == audioLow.length;
     	AudioTrack audioTrack = new AudioTrack(
     			AudioManager.STREAM_MUSIC,
     			sampleRate,
@@ -64,17 +64,23 @@ public class AudioModem {
         audioTrack.play();
         
         // sync
-        for (int i=0; i < 4; ++i) {
+        for (int i=0; i < 2; ++i) {
             sendByteToArduino((byte) 0xa5, audioTrack);
+        	//audioTrack.write(audioRef, 0, audioRef.length);
         }
     	
+        // send data
     	for (int i=0; i < data.length; ++i) {
     		sendByteToArduino((byte) data[i], audioTrack);
     	}
     	
+    	// send termination
+        sendByteToArduino((byte) 0x00, audioTrack);
+    	
     	// post sync
-        for (int i=0; i < 4; ++i) {
+        for (int i=0; i < 7; ++i) {
             sendByteToArduino((byte) 0xa5, audioTrack);
+        	//audioTrack.write(audioRef, 0, audioRef.length);
         }
 
     	// stop audio
