@@ -19,7 +19,6 @@
 
     <!-- Self information -->
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:background="?android:attr/activatedBackgroundIndicator"
@@ -70,7 +69,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawSelectorOnTop="false" />
-
+	
     <TextView
         android:id="@id/android:empty"
         android:layout_width="match_parent"

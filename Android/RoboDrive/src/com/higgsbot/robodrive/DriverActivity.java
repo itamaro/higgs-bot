@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DriverActivity extends Activity {
 	
@@ -29,15 +30,17 @@ public class DriverActivity extends Activity {
 	    mHost = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
     	mPort = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
     	
-	    //mToken = intent.getStringExtra(SignInActivity.TOKEN_MESSAGE);
 		
         txtLeftSpeed = (TextView)findViewById(R.id.TextViewY1);
         txtRightSpeed = (TextView)findViewById(R.id.TextViewY2);
-
+        
         driverCtrls = (DualJoystickView)findViewById(R.id.dualjoystickView);
         driverCtrls.setOnJostickMovedListener(_listenerLeft, _listenerRight);
         
         leftSpeed = rightSpeed = 0;
+        
+        txtLeftSpeed.setText(mHost);
+        txtRightSpeed.setText(Integer.toString(mPort));
 	}
 	
 	private void _updateSpeeds() {
@@ -102,11 +105,14 @@ public class DriverActivity extends Activity {
 	};
 	
 	private void sendData(String value) {
+		//Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
+		
 		Intent serviceIntent = new Intent(this, DataTransferService.class);
         serviceIntent.setAction(DataTransferService.ACTION_SEND_DATA);
         serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_ADDRESS, mHost);
         serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_PORT, mPort);
         serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_DATA_TO_SEND, value);
-        startService(serviceIntent);
+        this.startService(serviceIntent);
+        
 	}
 }

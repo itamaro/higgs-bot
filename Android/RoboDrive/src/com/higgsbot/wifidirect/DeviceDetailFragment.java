@@ -8,6 +8,7 @@ import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,6 +84,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         Intent intent = new Intent(getActivity(), DriverActivity.class);
                         intent.putExtra(DriverActivity.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
                         intent.putExtra(DriverActivity.EXTRAS_GROUP_OWNER_PORT, 8988);
+                        startActivity(intent);
                     }
                 });
         
@@ -94,6 +96,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         Intent intent = new Intent(getActivity(), ArmControlActivity.class);
                         intent.putExtra(ArmControlActivity.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
                         intent.putExtra(ArmControlActivity.EXTRAS_GROUP_OWNER_PORT, 8989);
+                        startActivity(intent);
                     }
                 });
         return mContentView;
@@ -107,7 +110,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         
         this.info = info;
         this.getView().setVisibility(View.VISIBLE);
-
+        
         // The owner IP is now known.
         TextView view = (TextView) mContentView.findViewById(R.id.group_owner);
         view.setText(getResources().getString(R.string.group_owner_text)
@@ -118,12 +121,21 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         view = (TextView) mContentView.findViewById(R.id.device_info);
         view.setText("Group Owner IP - " + info.groupOwnerAddress.getHostAddress());
 
+        if (info.groupFormed) { 
+            mContentView.findViewById(R.id.btn_start_driver).setVisibility(View.VISIBLE);
+            mContentView.findViewById(R.id.btn_start_arm_control).setVisibility(View.VISIBLE);
+        }
+
+        // hide the connect button
+        mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
+        
+        /*
         // After the group negotiation, we assign the group owner as the file
         // server. The file server is single threaded, single connection server
         // socket.
         if (info.groupFormed && info.isGroupOwner) {
-            new DriverAsyncTask(getActivity()).execute();
-            new ArmControlAsyncTask(getActivity()).execute();
+            //new DriverAsyncTask(getActivity(), mContentView.findViewById(R.id.status_text)).execute();
+            //new ArmControlAsyncTask(getActivity()).execute();
             
         } else if (info.groupFormed) {
             // The other device acts as the client. 
@@ -134,7 +146,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         }
 
         // hide the connect button
-        mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
+        mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);*/
     }
 
     /**
@@ -174,36 +186,54 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
      * A simple server socket that accepts connection and writes some data on
      * the stream.
      */
-    public static class DriverAsyncTask extends AsyncTask<Void, Void, Void> {
+    /*
+    public static class DriverAsyncTask extends AsyncTask<Void, Void, String> {
 
         private Context context;
+        private TextView statusText;
 
-        public DriverAsyncTask(Context context) {
+        public DriverAsyncTask(Context context, View statusText) {
             this.context = context;
+            this.statusText = (TextView) statusText;
         }
 
+
         @Override
-        protected Void doInBackground(Void... params) {
-            try {
+        protected String doInBackground(Void... params) {
+            String msg = null;
+        	try {
                 ServerSocket serverSocket = new ServerSocket(8988);
                 Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
                 
                 Socket client = serverSocket.accept();
                 Log.d(WiFiDirectActivity.TAG, "Server: connection done");
                 
-                while (true) {
+                //while (true) {
                 	InputStream inputstream = client.getInputStream();
+                	Log.d(WiFiDirectActivity.TAG, "SERVER:" + inputstream.toString());
                 	byte[] buffer = new byte[1024];
                 	inputstream.read(buffer);
                 	inputstream.close();
-                	Toast.makeText(context, new String(buffer), Toast.LENGTH_LONG).show();
-                }
+                	msg = new String(buffer);
+                	
+                //}
                 
             } catch (IOException e) {
                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
             }
             
-            return null;
+            return msg;
+        }
+        
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                statusText.setText("File copied - " + result);
+            }
+        }
+        @Override
+        protected void onPreExecute() {
+            statusText.setText("Opening a server socket");
         }
     }
     
@@ -238,5 +268,5 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
             
             return null;
         }
-    }
+    }*/
 }
