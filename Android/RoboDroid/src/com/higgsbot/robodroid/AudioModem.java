@@ -38,7 +38,6 @@ public class AudioModem {
     }
     
     private void sendByteToArduino(byte byte_to_send, AudioTrack audioTrack) {
-    	//byte_to_send = (byte) (((byte_to_send & 0x0F) << 4) | ((byte_to_send & 0xF0) >> 4));
     	for (int bit=0; bit < 8; ++bit) {
     		audioTrack.write(audioRef, 0, audioRef.length);
     		if (isBitSet(byte_to_send, bit)) {
