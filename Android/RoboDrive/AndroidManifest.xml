@@ -5,22 +5,32 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.higgsbot.robodrive.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.higgsbot.wifidirect.WiFiDirectActivity"
+            android:label="@string/app_name" android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action
+                    android:name="android.intent.action.MAIN" />
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.higgsbot.robodrive.DriverActivity"
             android:label="@string/title_activity_dual_joystick"
@@ -30,6 +40,10 @@
             android:name="com.higgsbot.robodrive.ArmControlActivity"
             android:label="@string/title_activity_arm_control" >
         </activity>
+        
+        <!-- Used for transferring data after a successful connection -->
+        <service android:enabled="true" android:name=".DataTransferService" />
+        
     </application>
 
 </manifest>

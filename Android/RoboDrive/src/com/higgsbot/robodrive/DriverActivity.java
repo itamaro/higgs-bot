@@ -1,11 +1,19 @@
 package com.higgsbot.robodrive;
 
+import com.higgsbot.wifidirect.DataTransferService;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
 
 public class DriverActivity extends Activity {
+	
+	public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
+	public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
+	String mHost;
+	int mPort;
 	
 	TextView txtLeftSpeed, txtRightSpeed;
     DualJoystickView driverCtrls;
@@ -15,6 +23,13 @@ public class DriverActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.driver);
+		
+		// Get the host and the port
+	    Intent intent = getIntent();
+	    mHost = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
+    	mPort = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
+    	
+	    //mToken = intent.getStringExtra(SignInActivity.TOKEN_MESSAGE);
 		
         txtLeftSpeed = (TextView)findViewById(R.id.TextViewY1);
         txtRightSpeed = (TextView)findViewById(R.id.TextViewY2);
@@ -35,7 +50,9 @@ public class DriverActivity extends Activity {
 		wifiMsg[5] = (rightSpeed >= 0 ? '+' : '-');
 		wifiMsg[6] = Integer.toString(Math.abs(rightSpeed)).charAt(0);
 		Log.d("Driver", new String(wifiMsg));
-		// **** send wifiMsg here! ****
+		
+		// **** send wifiMsg ****
+		this.sendData(new String(wifiMsg));
 	}
 
 	private JoystickMovedListener _listenerLeft = new JoystickMovedListener() {
@@ -83,5 +100,13 @@ public class DriverActivity extends Activity {
         	_updateSpeeds();
         };
 	};
-
+	
+	private void sendData(String value) {
+		Intent serviceIntent = new Intent(this, DataTransferService.class);
+        serviceIntent.setAction(DataTransferService.ACTION_SEND_DATA);
+        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_ADDRESS, mHost);
+        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_PORT, mPort);
+        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_DATA_TO_SEND, value);
+        startService(serviceIntent);
+	}
 }
