@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RoboDroid</string>
+    <string name="app_name">HiggsBot RoboDroid</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="play_button">Play</string>
-    <string name="msgLabel">Push Play</string>
-    <string name="amp_label">Amplitude</string>
+    <string name="play_button">Play Test</string>
+    <string name="driver_ip_label">Driver IP</string>
+    <string name="ip_hint">Enter IP Address</string>
+    <string name="arm_ctrl_ip_label">Arm Control IP</string>
+    <string name="snitch_color_label">Snitch Color</string>
+    <string-array name="snitch_colors">
+        <item >Red</item>
+        <item >Black</item>
+    </string-array>
+    <string name="start_button_label">Start Higgs!</string>
 
 </resources>

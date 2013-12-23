@@ -48,6 +48,13 @@ public class AudioModem {
     	}
     }
     
+	// ATTENTION:
+	// The Arduino decoding logic is very basic and polling-based!
+	// So you must pay attention to the following considerations when sending messages:
+	// - Wait a little between messages
+	//   (if you don't, the Arduino might still be handling the previous message, and might miss the next one)
+	// - Don't use the following values in the data: 0, 0xA5
+	//   (0 will end the message, 0xA5 will be stripped from the message)
     public void sendData(final char data[]) {
     	assert audioRef.length == audioHigh.length;
     	assert audioRef.length == audioLow.length;
