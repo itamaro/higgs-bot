@@ -8,13 +8,14 @@ RobotMovement Mvmnt(&MtrCtrl);
 
 void setup()
 {
-    Mvmnt.Setup();
-    //arm.Attach();
+    //Mvmnt.Setup();
+    arm.Attach();
+    pinMode(11, OUTPUT);
 }
 
 void loop()
 {
-    
+ /*   
     Mvmnt.MoveForward(255);
     delay(1000);
     Mvmnt.MoveBackward(255);
@@ -23,15 +24,21 @@ void loop()
     delay(1000);
     Mvmnt.SpinRight(255);
     delay(1000);
-       
-    /*
-    arm.SetAngle(-80);
-    delay(1000);
-    arm.SetAngle(0);
-    delay(1000);
-    arm.SetAngle(80);
-    delay(1000);
     */
+ 
+    //arm.SetSpeed(10, 1);
+    arm.RawWrite(80);
+    delay(1000);
+    //arm.SetSpeed(0, 0);
+    arm.RawWrite(90);
+    delay(1000);
+    //arm.SetSpeed(10, -1);
+    arm.RawWrite(100);
+    delay(1000);
+    //arm.SetSpeed(0, 0);
+    arm.RawWrite(90);
+    delay(1000);
+    
     /*
     arm.RawWrite(800);
     delay(1000);
