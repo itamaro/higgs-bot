@@ -22,7 +22,7 @@ public:
         this->m_ControlPin = ControlPin;
     }
     
-    void Attach()
+    void Setup()
     {
         this->m_srv.attach(this->m_ControlPin);
     }
