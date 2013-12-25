@@ -116,6 +116,18 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                 }
                 return true;
         	case R.id.display_group_info:
+        		
+            	Log.d("DEVicedetailfragment", "!!! START SERVICE !!!");
+            	Toast.makeText(getApplicationContext(), "services start !", Toast.LENGTH_SHORT).show();
+            	
+            	Intent intent = new Intent(this, NetworkService.class); 
+            	// 8988 is the driver port
+            	intent.putExtra("port", 8988); 
+            	startService(intent);
+            	 
+            	intent.putExtra("port", 8989);
+            	startService(intent);
+            	
         		 manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
 						
 						@Override
@@ -172,7 +184,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             @Override
             public void onSuccess() {
                 fragment.getView().setVisibility(View.GONE);
-                
+                Log.d(TAG, "!!! DISCONNECT !!!");
                 Intent intent = new Intent(getApplicationContext(), NetworkService.class);  
            	 	stopService(intent);
             }

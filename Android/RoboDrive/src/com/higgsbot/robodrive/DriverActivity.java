@@ -1,5 +1,12 @@
 package com.higgsbot.robodrive;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 import com.higgsbot.wifidirect.DataTransferService;
 
 import android.os.Bundle;
@@ -13,8 +20,10 @@ public class DriverActivity extends Activity {
 	
 	public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
 	public static final String EXTRAS_GROUP_OWNER_PORT = "go_port";
-	String mHost;
-	int mPort;
+	private Socket socket;
+	private String mHost;
+	private int mPort;
+	private PrintWriter mPrintWriter;
 	
 	TextView txtLeftSpeed, txtRightSpeed;
     DualJoystickView driverCtrls;
@@ -30,7 +39,8 @@ public class DriverActivity extends Activity {
 	    mHost = intent.getExtras().getString(EXTRAS_GROUP_OWNER_ADDRESS);
     	mPort = intent.getExtras().getInt(EXTRAS_GROUP_OWNER_PORT);
     	
-		
+    	new Thread(new ClientThread()).start();
+
         txtLeftSpeed = (TextView)findViewById(R.id.TextViewY1);
         txtRightSpeed = (TextView)findViewById(R.id.TextViewY2);
         
@@ -104,15 +114,25 @@ public class DriverActivity extends Activity {
         };
 	};
 	
+	class ClientThread implements Runnable {
+		@Override
+		public void run() {
+
+			try {
+				socket = new Socket();
+				socket.bind(null);
+	            socket.connect((new InetSocketAddress(mHost, mPort)), 5000);
+	    		mPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+		}
+	}
+	
 	private void sendData(String value) {
-		//Toast.makeText(getApplicationContext(), value, Toast.LENGTH_SHORT).show();
-		
-		Intent serviceIntent = new Intent(this, DataTransferService.class);
-        serviceIntent.setAction(DataTransferService.ACTION_SEND_DATA);
-        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_ADDRESS, mHost);
-        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_OWNER_PORT, mPort);
-        serviceIntent.putExtra(DataTransferService.EXTRAS_GROUP_DATA_TO_SEND, value);
-        this.startService(serviceIntent);
-        
+		mPrintWriter.println(value);
+		Log.d("SENDDATA", "SENDDATA: " + value);
 	}
 }
+

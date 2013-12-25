@@ -87,14 +87,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
         
         if (info.groupFormed && info.isGroupOwner) {
-        	 
-        	Intent intent = new Intent(getActivity(), NetworkService.class); 
-        	// 8988 is the driver port
-        	intent.putExtra("port", 8988); 
-        	getActivity().startService(intent);
-        	 
-        	intent.putExtra("port", 8989);
-        	getActivity().startService(intent);
+
         } 
     }
 

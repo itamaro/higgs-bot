@@ -86,14 +86,18 @@ public class NetworkService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+			Thread t = null;
 			while (! Thread.currentThread().isInterrupted()) {
 				try {
 					socket = serverSocket.accept();
 					Log.d("", "Server: connection done");
 					CommunicationThread commThread = new CommunicationThread(socket);
-					new Thread(commThread).start();
-
+					if (t != null) {
+						t.interrupt();
+					}
+					t = new Thread(commThread);
+					t.start();
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -118,9 +122,7 @@ public class NetworkService extends Service {
 			this.clientSocket = clientSocket;
 			
 			try {
-
 				this.input = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -129,10 +131,13 @@ public class NetworkService extends Service {
 		public void run() {
 			
 			try {
-
-				String read = input.readLine();
-
-				yourTurnItamar(read);
+				String read;
+				while (! Thread.currentThread().isInterrupted()) {
+					read = input.readLine();
+					yourTurnItamar(read);
+				}
+				
+				
 
 			} catch (IOException e) {
 				e.printStackTrace();
