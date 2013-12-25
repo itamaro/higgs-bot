@@ -3,9 +3,11 @@ package com.higgsbot.wifidirect;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -93,7 +95,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             
-        	case R.id.atn_direct_enable:
+        	case R.id.start_server:
                 if (manager != null && channel != null) {
                 	manager.createGroup(channel, new WifiP2pManager.ActionListener() {
 
@@ -113,6 +115,17 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
                     Log.e(TAG, "channel or manager is null");
                 }
                 return true;
+        	case R.id.display_group_info:
+        		 manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
+						
+						@Override
+						public void onGroupInfoAvailable(WifiP2pGroup group) {
+							 DeviceDetailFragment fragmentDetails = (DeviceDetailFragment) getFragmentManager()
+						                .findFragmentById(R.id.frag_detail);
+							fragmentDetails.setGroupInfo(group.getNetworkName(), group.getPassphrase());
+						}
+					});
+        		return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -159,6 +172,9 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             @Override
             public void onSuccess() {
                 fragment.getView().setVisibility(View.GONE);
+                
+                Intent intent = new Intent(getApplicationContext(), NetworkService.class);  
+           	 	stopService(intent);
             }
 
         });

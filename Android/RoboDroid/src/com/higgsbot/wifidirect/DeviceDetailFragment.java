@@ -2,8 +2,11 @@ package com.higgsbot.wifidirect;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,7 +57,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
 
         return mContentView;
     }
-
+    
     @Override
     public void onPause() {
         super.onPause();
@@ -75,19 +78,23 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         view.setText(getResources().getString(R.string.group_owner_text)
                 + ((info.isGroupOwner == true) ? getResources().getString(R.string.yes)
                         : getResources().getString(R.string.no)));
-
+        
         // InetAddress from WifiP2pInfo structure.
-        view = (TextView) mContentView.findViewById(R.id.device_info);
+        view = (TextView) mContentView.findViewById(R.id.group_ip);
         view.setText("Group Owner IP - " + info.groupOwnerAddress.getHostAddress());
         
         // hide the connect button
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.GONE);
         
         if (info.groupFormed && info.isGroupOwner) {
-        	
-        	new DriverAsyncTask(this).execute();
-            new ArmControlAsyncTask(this).execute();
-
+        	 
+        	Intent intent = new Intent(getActivity(), NetworkService.class); 
+        	// 8988 is the driver port
+        	intent.putExtra("port", 8988); 
+        	getActivity().startService(intent);
+        	 
+        	intent.putExtra("port", 8989);
+        	getActivity().startService(intent);
         } 
     }
 
@@ -99,9 +106,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
     public void showDetails(WifiP2pDevice device) {
         this.device = device;
         this.getView().setVisibility(View.VISIBLE);
-        TextView view = (TextView) mContentView.findViewById(R.id.device_address);
+        TextView view = (TextView) mContentView.findViewById(R.id.group_ssid);
         view.setText(device.deviceAddress);
-        view = (TextView) mContentView.findViewById(R.id.device_info);
+        view = (TextView) mContentView.findViewById(R.id.group_passphrase);
         view.setText(device.toString());
     }
 
@@ -110,9 +117,9 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
      */
     public void resetViews() {
         mContentView.findViewById(R.id.btn_connect).setVisibility(View.VISIBLE);
-        TextView view = (TextView) mContentView.findViewById(R.id.device_address);
+        TextView view = (TextView) mContentView.findViewById(R.id.group_ssid);
         view.setText(R.string.empty);
-        view = (TextView) mContentView.findViewById(R.id.device_info);
+        view = (TextView) mContentView.findViewById(R.id.group_passphrase);
         view.setText(R.string.empty);
         view = (TextView) mContentView.findViewById(R.id.group_owner);
         view.setText(R.string.empty);
@@ -121,94 +128,10 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         this.getView().setVisibility(View.GONE);
     }
 
-    /**
-     * A simple server socket that accepts connection and writes some data on
-     * the stream.
-     */
-    
-    public static class DriverAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private DeviceDetailFragment activity;
-
-        
-        public DriverAsyncTask(DeviceDetailFragment activity) {
-            this.activity = activity;
-        }
-
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String msg = null;
-            ServerSocket serverSocket = null;
-            
-        	try {
-        		serverSocket = new ServerSocket(8988);
-                Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
-        	 } catch (IOException e) {
-                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
-             }
-            
-            while (!this.activity.mMustStop) {
-            	try {
-            		Socket client = serverSocket.accept();
-	                Log.d(WiFiDirectActivity.TAG, "Server: connection done");
-	                
-	            	InputStream inputstream = client.getInputStream();
-	            	byte[] buffer = new byte[1024];
-	            	inputstream.read(buffer);
-	            	//inputstream.close();
-	            	msg = new String(buffer);
-	            	
-	            	Log.d("DeviceDetailFragment", "Driver Socket message: " + msg);
-	            	/* Call here to the class audio */
-	            	
-	            } catch (IOException e) {
-	                Log.e(WiFiDirectActivity.TAG, e.getMessage());
-	            }
-            }
-            return null;
-        }
-    }
-    
-    public static class ArmControlAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private DeviceDetailFragment activity;
-
-        
-        public ArmControlAsyncTask(DeviceDetailFragment activity) {
-            this.activity = activity;
-        }        
-        @Override
-        protected Void doInBackground(Void... params) {
-            String msg = null;
-            ServerSocket serverSocket = null;
-            
-        	try {
-        		serverSocket = new ServerSocket(8989);
-                Log.d(WiFiDirectActivity.TAG, "Server: Socket opened");
-        	 } catch (IOException e) {
-                 Log.e(WiFiDirectActivity.TAG, e.getMessage());
-             }
-            
-            while (!this.activity.mMustStop) {
-            	try {
-            		Socket client = serverSocket.accept();
-	                Log.d(WiFiDirectActivity.TAG, "Server: connection done");
-	                
-	            	InputStream inputstream = client.getInputStream();
-	            	byte[] buffer = new byte[1024];
-	            	inputstream.read(buffer);
-	            	//inputstream.close();
-	            	msg = new String(buffer);
-	            	
-	            	Log.d("DeviceDetailFragment", "Arm Control Socket message: " + msg);
-	            	/* Call here to the class audio */
-	            	
-	            } catch (IOException e) {
-	                Log.e(WiFiDirectActivity.TAG, e.getMessage());
-	            }
-            }
-            return null;
-        }
+    public void setGroupInfo(String ssid, String passPhrase) {
+    	TextView ssidView = (TextView) mContentView.findViewById(R.id.group_ssid);
+    	ssidView.setText("SSID: " + ssid);
+    	TextView passPhraseView = (TextView) mContentView.findViewById(R.id.group_passphrase);
+    	passPhraseView.setText("passphrase : " + passPhrase);
     }
 }

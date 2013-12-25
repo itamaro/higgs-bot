@@ -2,8 +2,14 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/atn_direct_enable"
-        android:icon="@drawable/ic_action_on_off"
+        android:id="@+id/start_server"
+        android:icon="@drawable/start"
         android:title="@string/start_server"
+        android:showAsAction="ifRoom|withText" />
+    
+    <item
+        android:id="@+id/display_group_info"
+        android:icon="@drawable/info"
+        android:title="@string/display_group_info"
         android:showAsAction="ifRoom|withText" />
 </menu>
