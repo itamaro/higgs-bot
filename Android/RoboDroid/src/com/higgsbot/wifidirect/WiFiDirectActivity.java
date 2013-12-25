@@ -33,6 +33,8 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     private Channel channel;
     private BroadcastReceiver receiver = null;
 
+	private AudioModem arduinoModem = new AudioModem();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,71 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 		
         manager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), null);
+    	
+    	// start the audio sender service
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//            	String test_commands[] = {
+//            			"L+4R-5",
+//            			"A+1",
+//            			"N+",
+//            			"K+",
+//            			"N-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-",
+//            			"L-0R-0A-0N-K-"
+//            	};
+//            	int cmd=0;
+        		char lastSentCommand[] = {0,0};
+            	while (true) {
+            		char audioCommand[] = Globals.getAudioCommand();
+            		if ((audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
+            			// no state change, so don't send audio
+            			try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+            		} else {
+            			// send latest state
+	                	Log.d("AudioSender", "Sending audio command 0x" + 
+	                			String.format("%02x", (byte) audioCommand[0]) + " 0x" +
+	                			String.format("%02x", (byte) audioCommand[1]));
+	        			arduinoModem.sendData(audioCommand);
+	        			// cache last sent command
+	        			lastSentCommand[0] = audioCommand[0];
+	        			lastSentCommand[1] = audioCommand[1];
+            		}
+        			
+//        			// TEST CODE:
+//                    Globals.updateState(test_commands[cmd]);
+//                    cmd = (cmd + 1) % test_commands.length;
+            	}
+            }
+        }).start();
     }
 
     /** register the BroadcastReceiver with the intent values to be matched */
@@ -120,13 +187,14 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             	Log.d("DEVicedetailfragment", "!!! START SERVICE !!!");
             	Toast.makeText(getApplicationContext(), "services start !", Toast.LENGTH_SHORT).show();
             	
-            	Intent intent = new Intent(this, NetworkService.class); 
+            	// start the network service
+            	Intent netIntent = new Intent(this, NetworkService.class); 
             	// 8988 is the driver port
-            	intent.putExtra("port", 8988); 
-            	startService(intent);
+            	netIntent.putExtra("port", 8988); 
+            	startService(netIntent);
             	 
-            	intent.putExtra("port", 8989);
-            	startService(intent);
+            	netIntent.putExtra("port", 8989);
+            	startService(netIntent);
             	
         		 manager.requestGroupInfo(channel, new WifiP2pManager.GroupInfoListener() {
 						

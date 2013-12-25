@@ -1,4 +1,4 @@
-package com.higgsbot.robodroid;
+package com.higgsbot.wifidirect;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
