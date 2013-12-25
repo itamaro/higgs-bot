@@ -34,6 +34,11 @@ public:
         this->m_pMtrCtrl->Setup();
     }
     
+    void MoveWheel(int Wheel, int speed, int dir)
+    {
+        this->m_pMtrCtrl->Move(Wheel, speed, dir);
+    }
+    
     void MoveForward(int speed)
     {
         this->m_pMtrCtrl->Move(LeftWheel, speed, Forward);

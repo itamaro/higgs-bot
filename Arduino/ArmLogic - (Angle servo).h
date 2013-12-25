@@ -3,12 +3,12 @@
 #include <Arduino.h>
 //#include <Servo.h> // This is not included for some reason
 
-#define SERVO_MIN_VALUE            0
-#define SERVO_MAX_VALUE            180
+#define SERVO_MIN_VALUE            800
+#define SERVO_MAX_VALUE            2200
 #define SERVO_VALUE_RANGE       (SERVO_MAX_VALUE - SERVO_MIN_VALUE)
 #define SERVO_MID_VALUE            (SERVO_MIN_VALUE + (SERVO_VALUE_RANGE / 2))
 
-#define SERVO_MAX_SPEED    (SERVO_VALUE_RANGE/2)
+#define MAX_ANGLE    80
 
 class RobotArm
 {
@@ -22,13 +22,13 @@ public:
         this->m_ControlPin = ControlPin;
     }
     
-    void Setup()
+    void Attach()
     {
         this->m_srv.attach(this->m_ControlPin);
     }
     
     // Writes raw data to the servo
-    // The servo will get values from 0-180
+    // The servo will get values from 800-2200
     // This method will round to these numbers if passed
     void RawWrite(int ms)
     {
@@ -42,38 +42,29 @@ public:
             ms = SERVO_MAX_VALUE;
         }
         
-        this->m_srv.write(ms);
+        this->m_srv.writeMicroseconds(ms);
     }
     
     /**
-    This method will set the speed of the servo to the speed&direction you desire.
-    The servo supports 90 values of speed (0-90).
-    dir is either -1 or 1
+    This method will set the angle of the servo to the angle you desire.
+    The servo supports only 160 degrees.
+    The method considers 0 as the middle and so it gets values ranging from -80 to 80.
+    Negative numbers are on the left while positive numbers are on the right.
     */
-    void SetSpeed(int spd, int dir)
+    void SetAngle(int angle)
     {
-        if (spd > SERVO_MAX_SPEED)
+        if (angle > MAX_ANGLE)
         {
-            spd = SERVO_MAX_SPEED;
+            angle = MAX_ANGLE;
         }
         
-        if (spd < -SERVO_MAX_SPEED)
+        if (angle < -MAX_ANGLE)
         {
-            spd = -SERVO_MAX_SPEED;
+            angle = -MAX_ANGLE;
         }
         
-        if (dir>1)
-        {
-            dir = 1;
-        }
-        
-        if (dir<-1)
-        {
-            dir = -1;
-        }
-        
-        // ms = mid + (speed * dir)
-        int ms = SERVO_MID_VALUE + (spd*dir);
+        // ms = min + (angle if left was 0) * (relation between angle and ms values)
+        int ms = SERVO_MIN_VALUE + ((angle + MAX_ANGLE) * (SERVO_VALUE_RANGE/(MAX_ANGLE*2)));
         
         this->RawWrite(ms);
     }
