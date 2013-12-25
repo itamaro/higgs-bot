@@ -50,8 +50,8 @@ void loop()
         int Padding = (AndroidMessage[1] & 0x03) >> 0;
         
         /****************** Handle ******************/
-        Mvmnt.MoveWheel(LeftWheel, WheelSpeeds[LSpeed], LDir);
-        Mvmnt.MoveWheel(RightWheel, WheelSpeeds[RSpeed], RDir);
+        Mvmnt.MoveWheel(LeftWheel, WheelSpeeds[LSpeed], (LDir*2)-1);
+        Mvmnt.MoveWheel(RightWheel, WheelSpeeds[RSpeed], (RDir*2)-1);
         
         Arm.SetSpeed(ArmSpeeds[ASpeed], ADir);
         
