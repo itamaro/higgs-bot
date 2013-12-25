@@ -134,7 +134,7 @@ public class NetworkService extends Service {
 				String read;
 				while (! Thread.currentThread().isInterrupted()) {
 					read = input.readLine();
-					yourTurnItamar(read);
+					Globals.updateState(read);
 				}
 				
 				
@@ -142,16 +142,6 @@ public class NetworkService extends Service {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		private void yourTurnItamar(String message) {
-			/* Call here to android audio */
-			if (message == null) {
-				Log.d("NetworkService", "toAudio: null message");
-			} else {
-				Log.d("NetworkService", "toAudio: " + message);
-			}
-			
 		}
 	}
 }
