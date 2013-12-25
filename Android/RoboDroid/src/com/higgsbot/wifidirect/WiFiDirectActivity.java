@@ -55,12 +55,14 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
         super.onResume();
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
         registerReceiver(receiver, intentFilter);
+        Log.d(TAG, "!!! registerReceiver");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+        Log.d(TAG, "!!! unregisterReceiver");
     }
 
     /**
