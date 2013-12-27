@@ -136,8 +136,6 @@ public class NetworkService extends Service {
 					read = input.readLine();
 					Globals.updateState(read);
 				}
-				
-				
 
 			} catch (IOException e) {
 				e.printStackTrace();

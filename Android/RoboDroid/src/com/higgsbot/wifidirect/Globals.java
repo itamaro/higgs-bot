@@ -4,15 +4,25 @@ import android.util.Log;
 
 public class Globals {
 	
-	public static char left_dir='+';
-	public static int left_speed=0;
-	public static char right_dir='+';
-	public static int right_speed=0;
-	public static char arm_dir='+';
-	public static int arm_speed=0;
-	public static boolean nitro=false;
-	public static boolean knife=false;
-		
+	private static char left_dir='+';
+	private static int left_speed=0;
+	private static char right_dir='+';
+	private static int right_speed=0;
+	private static char arm_dir='+';
+	private static int arm_speed=0;
+	private static boolean nitro=false;
+	private static boolean knife=false;
+	private static boolean test=false;
+	private static SnitchColorEnum snitch_color;
+	
+	public static boolean isPlayTest() {
+		if (test) {
+			test = false;
+			return true;
+		}
+		return false;
+	}
+	
 	private static void normalize() {
 		if (left_speed == 0) {
 			left_dir = '+';
@@ -49,26 +59,41 @@ public class Globals {
 			while (i < message.length()) {
 				switch (message.charAt(i)) {
 				case 'L':
+					// update left engine speed
 					left_dir = message.charAt(i+1);
 					left_speed = message.charAt(i+2) - '0';
 					i += 3;
 					break;
 				case 'R':
+					// update right engine speed
 					right_dir = message.charAt(i+1);
 					right_speed = message.charAt(i+2) - '0';
 					i += 3;
 					break;
 				case 'A':
+					// update arm speed
 					arm_dir = message.charAt(i+1);
 					arm_speed = message.charAt(i+2) - '0';
 					i += 3;
 					break;
 				case 'N':
+					// set nitro state
 					nitro = (message.charAt(i+1) == '+');
 					i += 2;
 					break;
 				case 'K':
+					// set knife state
 					knife = (message.charAt(i+1) == '+');
+					i += 2;
+					break;
+				case 'T':
+					// play test sound
+					test = true;
+					++i;
+					break;
+				case 'S':
+					// TODO: start autonomous mode
+					snitch_color = (message.charAt(i+1) == '0' ? SnitchColorEnum.Red : SnitchColorEnum.Black);
 					i += 2;
 					break;
 				default:
@@ -78,5 +103,4 @@ public class Globals {
 			}
 		}
 	}
-
 }
