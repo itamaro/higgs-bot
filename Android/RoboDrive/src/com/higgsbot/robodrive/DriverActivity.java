@@ -6,15 +6,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import com.higgsbot.wifidirect.DataTransferService;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class DriverActivity extends Activity {
 	
@@ -25,9 +23,11 @@ public class DriverActivity extends Activity {
 	private int mPort;
 	private PrintWriter mPrintWriter;
 	
-	TextView txtLeftSpeed, txtRightSpeed;
+	TextView txtDebugState;
+	ToggleButton nitroToggle;
     DualJoystickView driverCtrls;
     int leftSpeed, rightSpeed;
+    boolean nitro;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,53 +41,52 @@ public class DriverActivity extends Activity {
     	
     	new Thread(new ClientThread()).start();
 
-        txtLeftSpeed = (TextView)findViewById(R.id.TextViewY1);
-        txtRightSpeed = (TextView)findViewById(R.id.TextViewY2);
+        txtDebugState = (TextView)findViewById(R.id.txtDebugState);
+        nitroToggle = (ToggleButton)findViewById(R.id.toggleNitro);
         
         driverCtrls = (DualJoystickView)findViewById(R.id.dualjoystickView);
         driverCtrls.setOnJostickMovedListener(_listenerLeft, _listenerRight);
         
         leftSpeed = rightSpeed = 0;
+        nitro = false;
         
-        txtLeftSpeed.setText(mHost);
-        txtRightSpeed.setText(Integer.toString(mPort));
+        updateRemoteState();
 	}
 	
-	private void _updateSpeeds() {
-		assert Math.abs(leftSpeed) <= 9;
-		assert Math.abs(rightSpeed) <= 9;
-		// Send speeds over WiFi to RoboDroid
-		char wifiMsg[] = "DL??R??".toCharArray();
+	private void updateRemoteState() {
+		txtDebugState.setText("Left: " + Integer.toString(leftSpeed) +
+				", Right: " + Integer.toString(rightSpeed) +
+				", Nitro: " + (nitro ? "On" : "Off"));
+		assert Math.abs(leftSpeed) <= 7;
+		assert Math.abs(rightSpeed) <= 7;
+		// Send state over WiFi to RoboDroid
+		char wifiMsg[] = "DL??R??N?".toCharArray();
 		wifiMsg[2] = (leftSpeed >= 0 ? '+' : '-');
 		wifiMsg[3] = Integer.toString(Math.abs(leftSpeed)).charAt(0);
 		wifiMsg[5] = (rightSpeed >= 0 ? '+' : '-');
 		wifiMsg[6] = Integer.toString(Math.abs(rightSpeed)).charAt(0);
+		wifiMsg[8] = (nitro ? '+' : '-');
 		Log.d("Driver", new String(wifiMsg));
-		
-		// **** send wifiMsg ****
-		this.sendData(new String(wifiMsg));
+		mPrintWriter.println(new String(wifiMsg));
 	}
 
 	private JoystickMovedListener _listenerLeft = new JoystickMovedListener() {
 
         @Override
         public void OnMoved(int pan, int tilt) {
-            txtLeftSpeed.setText(Integer.toString(tilt));
             leftSpeed = tilt;
-        	_updateSpeeds();
+        	updateRemoteState();
         }
 
         @Override
         public void OnReleased() {
-            txtLeftSpeed.setText("released");
             leftSpeed = 0;
-        	_updateSpeeds();
+        	updateRemoteState();
         }
         
         public void OnReturnedToCenter() {
-            txtLeftSpeed.setText("stopped");
             leftSpeed = 0;
-        	_updateSpeeds();
+        	updateRemoteState();
         };
 	}; 
 
@@ -95,24 +94,27 @@ public class DriverActivity extends Activity {
 
         @Override
         public void OnMoved(int pan, int tilt) {
-            txtRightSpeed.setText(Integer.toString(tilt));
             rightSpeed = tilt;
-        	_updateSpeeds();
+        	updateRemoteState();
         }
 
         @Override
         public void OnReleased() {
-            txtRightSpeed.setText("released");
             rightSpeed = 0;
-        	_updateSpeeds();
+        	updateRemoteState();
         }
         
         public void OnReturnedToCenter() {
-            txtRightSpeed.setText("stopped");
             rightSpeed = 0;
-        	_updateSpeeds();
+        	updateRemoteState();
         };
 	};
+	
+	public void onNitroToggled(View view) {
+		// Is the toggle on?
+	    nitro = ((ToggleButton) view).isChecked();
+	    updateRemoteState();
+	}
 	
 	class ClientThread implements Runnable {
 		@Override
@@ -128,11 +130,6 @@ public class DriverActivity extends Activity {
 			}
 
 		}
-	}
-	
-	private void sendData(String value) {
-		mPrintWriter.println(value);
-		Log.d("SENDDATA", "SENDDATA: " + value);
 	}
 }
 

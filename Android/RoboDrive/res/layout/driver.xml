@@ -3,39 +3,30 @@
         android:layout_height="fill_parent">
 
         <com.higgsbot.robodrive.DualJoystickView
-                android:id="@+id/dualjoystickView" android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dip" android:layout_width="fill_parent"
-                android:layout_height="175dip" />
+            android:id="@+id/dualjoystickView"
+            android:layout_width="450dp"
+            android:layout_height="175dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dip" />
 
         <TableLayout android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dip">
-                <TableRow>
-                        <TextView android:text="" android:layout_width="50dip"
-                                android:layout_height="wrap_content"></TextView>
-                        <TextView android:text="" android:id="@+id/TextViewX1"
-                                android:layout_width="300dip" android:layout_height="wrap_content"></TextView>
 
-                        <TextView android:text="" android:layout_width="50dip"
-                                android:layout_height="wrap_content"></TextView>
-                        <TextView android:text="" android:id="@+id/TextViewX2"
-                                android:layout_width="50dip" android:layout_height="wrap_content"></TextView>
-                </TableRow>
-                <TableRow>
+                <ToggleButton
+                    android:id="@+id/toggleNitro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/nitro_toggle"
+                    android:textOn="@string/nitro_toggle"
+                    android:textOff="@string/nitro_toggle"
+                    android:onClick="onNitroToggled" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/y_val_label" >
-                        </TextView>
-                        <TextView android:text="" android:id="@+id/TextViewY1"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-
-                        <TextView android:text="@string/y_val_label" android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"></TextView>
-                        <TextView android:text="" android:id="@+id/TextViewY2"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-                </TableRow>
         </TableLayout>
+
+        <TextView
+            android:id="@+id/txtDebugState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 </LinearLayout>
