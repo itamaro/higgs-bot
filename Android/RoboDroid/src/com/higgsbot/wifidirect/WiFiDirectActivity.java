@@ -89,6 +89,9 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 //            	int cmd=0;
         		char lastSentCommand[] = {0,0};
             	while (true) {
+            		if (Globals.isPlayTest()) {
+            			arduinoModem.sendData("Go Higgs!".toCharArray());
+            		}
             		char audioCommand[] = Globals.getAudioCommand();
             		if ((audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
             			// no state change, so don't send audio

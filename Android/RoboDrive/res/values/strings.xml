@@ -10,7 +10,6 @@
     <string name="arm_speed_label">Arm Speed</string>
     <string name="arm_ctrl_label">Arm Control</string>
     <string name="drive_label">Driver</string>
-    
     <string name="enable_p2p_button">P2P On/Off</string>
     <string name="start_server">Start server</string>
     <string name="discover_peers_button">Discover</string>
@@ -27,5 +26,15 @@
     <string name="group_owner_text">"Am I the Group Owner? "</string>
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
+    <string name="nitro_toggle">Nitro</string>
+    <string name="knife_toggle">Knife</string>
+    <string name="title_activity_stage_config">Stage Configuration</string>
+    <string name="snitch_color_label">Snitch Color</string>
+    <string-array name="snitch_colors">
+        <item >Red</item>
+        <item >Black</item>
+    </string-array>
+    <string name="start_button_label">Start Higgs!</string>
+    <string name="play_button">Play Test</string>
 
 </resources>

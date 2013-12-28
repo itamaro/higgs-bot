@@ -6,15 +6,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import com.higgsbot.robodrive.DriverActivity.ClientThread;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class ArmControlActivity extends Activity {
 	public static final String EXTRAS_GROUP_OWNER_ADDRESS = "go_host";
@@ -25,9 +24,10 @@ public class ArmControlActivity extends Activity {
 	private PrintWriter mPrintWriter;
 
 	
-	TextView txtArmSpeed;
+	TextView txtDebugState;
 	JoystickView armSpeedCtrl;
 	int armSpeed;
+	boolean knife;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +41,15 @@ public class ArmControlActivity extends Activity {
     	
     	new Thread(new ClientThread()).start();
 
-		txtArmSpeed = (TextView)findViewById(R.id.armSpeed);
+		txtDebugState = (TextView)findViewById(R.id.txtDebugState);
 
 		armSpeedCtrl = (JoystickView)findViewById(R.id.armSpeedCtrl);
 		armSpeedCtrl.setOnJostickMovedListener(_listener);
 		
 		armSpeed = 0;
+		knife = false;
+		
+		updateRemoteState();
 	}
 
 	@Override
@@ -56,41 +59,44 @@ public class ArmControlActivity extends Activity {
 		return true;
 	}
 	
-	private void _updateSpeed() {
-		assert Math.abs(armSpeed) <= 9;
+	private void updateRemoteState() {
+		txtDebugState.setText("Arm: " + Integer.toString(armSpeed) +
+				", Knife: " + (knife ? "On" : "Off"));
+		assert Math.abs(armSpeed) <= 7;
 		// Send speeds over WiFi to RoboDroid
-		char wifiMsg[] = "A??".toCharArray();
+		char wifiMsg[] = "A??K?".toCharArray();
 		wifiMsg[1] = (armSpeed >= 0 ? '+' : '-');
 		wifiMsg[2] = Integer.toString(Math.abs(armSpeed)).charAt(0);
+		wifiMsg[4] = (knife ? '+' : '-');
 		Log.d("Arm", new String(wifiMsg));
-		// **** send wifiMsg here! ****
-		
-		// **** send wifiMsg ****
-		this.sendData(new String(wifiMsg));
+		mPrintWriter.println(new String(wifiMsg));
 	}
 
 	private JoystickMovedListener _listener = new JoystickMovedListener() {
 
         @Override
         public void OnMoved(int pan, int tilt) {
-        	txtArmSpeed.setText(Integer.toString(pan));
         	armSpeed = pan;
-        	_updateSpeed();
+        	updateRemoteState();
         }
 
         @Override
         public void OnReleased() {
-        	txtArmSpeed.setText("released");
         	armSpeed = 0;
-        	_updateSpeed();
+        	updateRemoteState();
         }
         
         public void OnReturnedToCenter() {
-        	txtArmSpeed.setText("stopped");
         	armSpeed = 0;
-        	_updateSpeed();
+        	updateRemoteState();
         };
 	};
+	
+	public void onKnifeToggled(View view) {
+		// Is the toggle on?
+	    knife = ((ToggleButton) view).isChecked();
+	    updateRemoteState();
+	}
 
 	class ClientThread implements Runnable {
 		@Override
@@ -106,10 +112,5 @@ public class ArmControlActivity extends Activity {
 			}
 
 		}
-	}
-	
-	private void sendData(String value) {
-		mPrintWriter.println(value);
-		Log.d("SENDDATA", "SENDDATA: " + value);
 	}
 }
