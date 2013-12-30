@@ -25,6 +25,7 @@ public:
     void Setup()
     {
         this->m_srv.attach(this->m_ControlPin);
+        this->SetSpeed(0, 1);
     }
     
     // Writes raw data to the servo
