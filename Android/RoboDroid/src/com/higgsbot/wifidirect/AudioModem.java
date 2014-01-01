@@ -6,15 +6,35 @@ import android.media.AudioTrack;
 
 public class AudioModem {
 
-    private int buffSize = 12800 / 2;	// in shorts!
+    private int buffSize = 8400 / 2;	// in shorts!
     private double toneFreq = 2*441.;
     private int sampleRate = 44100;
     private short audioRef[];
     private short audioHigh[];
     private short audioLow[];
+    private AudioTrack audioTrack;
 	
 	public AudioModem() {
 		initAudioData();
+		
+		// configure audio channel
+		audioTrack = new AudioTrack(
+    			AudioManager.STREAM_MUSIC,
+    			sampleRate,
+    			AudioFormat.CHANNEL_OUT_MONO,
+    			AudioFormat.ENCODING_PCM_16BIT,
+    			buffSize * 2,	// doubled to convert from size in shorts to size in bytes
+    			AudioTrack.MODE_STREAM);
+    	
+        // start audio
+        audioTrack.play();
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+            	
+            }
+        }).start();
 	}
     
     private short[] generatePaddedSineCycle(int amp, double freq, int sr, int prepad, int postpad) {
@@ -28,9 +48,9 @@ public class AudioModem {
     }
     
     private void initAudioData() {
-    	audioRef = generatePaddedSineCycle(6000, toneFreq, sampleRate, 0, 0);
-    	audioHigh = generatePaddedSineCycle(8000, toneFreq, sampleRate, 0, 0);
-    	audioLow = generatePaddedSineCycle(4000, toneFreq, sampleRate, 0, 0);
+    	audioRef = generatePaddedSineCycle(9000, toneFreq, sampleRate, 0, 0);
+    	audioHigh = generatePaddedSineCycle(12000, toneFreq, sampleRate, 0, 0);
+    	audioLow = generatePaddedSineCycle(6000, toneFreq, sampleRate, 0, 0);
     }
     
     private static Boolean isBitSet(byte b, int bit) {
@@ -58,19 +78,9 @@ public class AudioModem {
     public void sendData(final char data[]) {
     	assert audioRef.length == audioHigh.length;
     	assert audioRef.length == audioLow.length;
-    	AudioTrack audioTrack = new AudioTrack(
-    			AudioManager.STREAM_MUSIC,
-    			sampleRate,
-    			AudioFormat.CHANNEL_OUT_MONO,
-    			AudioFormat.ENCODING_PCM_16BIT,
-    			buffSize * 2,	// doubled to convert from size in shorts to size in bytes
-    			AudioTrack.MODE_STREAM);
     	
-        // start audio
-        audioTrack.play();
-        
         // sync
-        for (int i=0; i < 2; ++i) {
+        for (int i=0; i < 3; ++i) {
             sendByteToArduino((byte) 0xa5, audioTrack);
         	//audioTrack.write(audioRef, 0, audioRef.length);
         }
@@ -84,13 +94,13 @@ public class AudioModem {
         sendByteToArduino((byte) 0x00, audioTrack);
     	
     	// post sync
-        for (int i=0; i < 7; ++i) {
+        for (int i=0; i < 6; ++i) {
             sendByteToArduino((byte) 0xa5, audioTrack);
         	//audioTrack.write(audioRef, 0, audioRef.length);
         }
 
     	// stop audio
-        audioTrack.stop();
-        audioTrack.release();
+        //audioTrack.stop();
+        //audioTrack.release();
     }
 }

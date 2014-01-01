@@ -55,65 +55,77 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
             @Override
             public void run() {
 //            	String test_commands[] = {
-//            			"L+4R-5",
-//            			"A+1",
-//            			"N+",
+//            			"L-0R-0A-0N-K-",
+//            			"L+7R-7",
+//            			"L+0R+0",
 //            			"K+",
-//            			"N-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
-//            			"L-0R-0A-0N-K-",
+//            			"K-",
+//            			"L-7R+7",
+////            			"A+1",
+////            			"N+",
+////            			"K+",
+////            			"N-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
+////            			"L-0R-0A-0N-K-",
 //            			"L-0R-0A-0N-K-"
 //            	};
-//            	int cmd=0;
-        		char lastSentCommand[] = {0,0};
+//            	int cmd=0, loop=0;
+        		//char lastSentCommand[] = {0,0};
             	while (true) {
             		if (Globals.isPlayTest()) {
             			arduinoModem.sendData("Go Higgs!".toCharArray());
             		}
             		char audioCommand[] = Globals.getAudioCommand();
-            		if ((audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
-            			// no state change, so don't send audio
-            			try {
-							Thread.sleep(20);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-            		} else {
+//            		if ((audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
+//            			// no state change, so don't send audio
+//            			try {
+//							Thread.sleep(20);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//            		} else {
             			// send latest state
 	                	Log.d("AudioSender", "Sending audio command 0x" + 
 	                			String.format("%02x", (byte) audioCommand[0]) + " 0x" +
 	                			String.format("%02x", (byte) audioCommand[1]));
 	        			arduinoModem.sendData(audioCommand);
 	        			// cache last sent command
-	        			lastSentCommand[0] = audioCommand[0];
-	        			lastSentCommand[1] = audioCommand[1];
-            		}
+	        			//lastSentCommand[0] = audioCommand[0];
+	        			//lastSentCommand[1] = audioCommand[1];
+//            			try {
+//							Thread.sleep(100);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
+            		//}
         			
 //        			// TEST CODE:
+//        			++loop;
+//        			cmd = (loop / 10) % test_commands.length;
 //                    Globals.updateState(test_commands[cmd]);
-//                    cmd = (cmd + 1) % test_commands.length;
+//                    //cmd = (cmd + 1) % test_commands.length;
             	}
             }
         }).start();
