@@ -12,7 +12,8 @@ SimpleControl Knife(7);
 SimpleControl Nitro(4);
 
 // Speed levels
-int WheelSpeeds[] = {0, 36, 72, 108, 144, 180, 216, 255};
+int LeftWheelSpeeds[] = {0, 36, 72, 108, 144, 180, 216, 255};
+int RightWheelSpeeds[] = {0, 30, 60, 90, 120, 150, 180, 200};
 int ArmSpeeds[] = {0, 12, 24, 36, 48, 60, 72, 90};
 
 void setup()
@@ -50,8 +51,8 @@ void loop()
         int Padding = (AndroidMessage[1] & 0x03) >> 0;
         
         /****************** Handle ******************/
-        Mvmnt.MoveWheel(LeftWheel, WheelSpeeds[LSpeed], (LDir*2)-1);
-        Mvmnt.MoveWheel(RightWheel, WheelSpeeds[RSpeed], (RDir*2)-1);
+        Mvmnt.MoveWheel(LeftWheel, LeftWheelSpeeds[LSpeed], (LDir*2)-1);
+        Mvmnt.MoveWheel(RightWheel, RightWheelSpeeds[RSpeed], (RDir*2)-1);
         
         Arm.SetSpeed(ArmSpeeds[ASpeed], ADir);
         
