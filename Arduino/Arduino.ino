@@ -31,24 +31,41 @@ void loop()
 {
     int msg_len = getAndroidMessage();
     
-    if (msg_len != 2)
+    if (msg_len != 2 && msg_len != 1)
     {
         // TODO: ERROR? HOW?
     }
     else
     {
-        /****************** Parse ******************/
-        // LeftDir(1) + LeftSpeed(3) + RightDir(1) + RightSpeed(3) + ArmDir(1) + ArmSpeed(3) + Knife(1) + Nitro(1) + Padding(2)
-        int LDir = (AndroidMessage[0] & 0x80) >> 7;
-        int LSpeed = (AndroidMessage[0] & 0x70) >> 4;
-        int RDir = (AndroidMessage[0] & 0x08) >> 3;
-        int RSpeed = (AndroidMessage[0] & 0x07) >> 0;
+        int index = 0;
         
-        int ADir = (AndroidMessage[1] & 0x80) >> 7;
-        int ASpeed = (AndroidMessage[1] & 0x70) >> 4;
-        int K = (AndroidMessage[1] & 0x08) >> 3;
-        int N = (AndroidMessage[1] & 0x04) >> 2;
-        int Padding = (AndroidMessage[1] & 0x03) >> 0;
+        int LDir, LSpeed, RDir, RSpeed;
+        
+        // Special case of A5 in first byte
+        if (msg_len == 1)
+        {
+            LDir = 1;
+            LSpeed = 2;
+            RDir = 0;
+            RSpeed = 5;
+        }
+        else
+        {
+            /****************** Parse ******************/
+            // LeftDir(1) + LeftSpeed(3) + RightDir(1) + RightSpeed(3) + ArmDir(1) + ArmSpeed(3) + Knife(1) + Nitro(1) + Padding(2)
+            LDir = (AndroidMessage[0] & 0x80) >> 7;
+            LSpeed = (AndroidMessage[0] & 0x70) >> 4;
+            RDir = (AndroidMessage[0] & 0x08) >> 3;
+            RSpeed = (AndroidMessage[0] & 0x07) >> 0;
+            
+            index += 1;
+        }
+        
+        int ADir = (AndroidMessage[index] & 0x80) >> 7;
+        int ASpeed = (AndroidMessage[index] & 0x70) >> 4;
+        int K = (AndroidMessage[index] & 0x08) >> 3;
+        int N = (AndroidMessage[index] & 0x04) >> 2;
+        int Padding = (AndroidMessage[index] & 0x03) >> 0;
         
         /****************** Handle ******************/
         Mvmnt.MoveWheel(LeftWheel, LeftWheelSpeeds[LSpeed], (LDir*2)-1);
