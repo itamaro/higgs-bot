@@ -49,7 +49,7 @@ public class ArmControlActivity extends Activity {
 		armSpeed = 0;
 		knife = false;
 		
-		updateRemoteState();
+		//updateRemoteState();
 	}
 
 	@Override

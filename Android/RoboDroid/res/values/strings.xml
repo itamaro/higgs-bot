@@ -21,4 +21,5 @@
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
     <string name="display_group_info">Display group info</string>
+    <string name="start_camera">Start camera</string>
 </resources>

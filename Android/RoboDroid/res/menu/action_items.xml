@@ -12,4 +12,10 @@
         android:icon="@drawable/info"
         android:title="@string/display_group_info"
         android:showAsAction="ifRoom|withText" />
+    
+    <item
+        android:id="@+id/start_camera"
+        android:icon="@drawable/camera"
+        android:title="@string/start_camera"
+        android:showAsAction="ifRoom|withText" />
 </menu>

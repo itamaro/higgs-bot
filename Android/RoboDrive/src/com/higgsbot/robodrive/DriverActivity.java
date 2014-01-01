@@ -50,7 +50,7 @@ public class DriverActivity extends Activity {
         leftSpeed = rightSpeed = 0;
         nitro = false;
         
-        updateRemoteState();
+        //updateRemoteState();
 	}
 	
 	private void updateRemoteState() {

@@ -3,7 +3,7 @@
 // *** THESE VALUES WILL REQUIRE CALIBRATION ***
 #define PEAK_DETECT_THRESH 10
 #define CYCLE_RESET_THRESH 8
-#define MESSAGE_TIMEOUT 15
+#define MESSAGE_TIMEOUT 8
 
 int _syncPeaksCyclic[SYNC_PEAKS];
 int _syncHead;
@@ -39,8 +39,7 @@ int _getNextAudioPeak(int timeout) {
 
 int _isInSync() {
   // look for a 0xA5 pattern in incoming audio peaks
-  static int diffsign[SYNC_PEAKS-1] = { 
-    +1, -1, -1, +1, +1, -1, -1, +1, -1, +1, +1, -1, -1, +1, +1  };
+  static int diffsign[SYNC_PEAKS-1] = { +1, -1, -1, +1, +1, -1, -1, +1, -1, +1, +1, -1, -1, +1, +1  };
   for (int i=0; i < SYNC_PEAKS-1; ++i) {
     int diff = _syncPeaksCyclic[(_syncHead + i + 1) % SYNC_PEAKS] - _syncPeaksCyclic[(_syncHead + i) % SYNC_PEAKS];
     if (diff * diffsign[i] < 0) {
@@ -98,11 +97,13 @@ int getAndroidMessage() {
     }
     AndroidMessage[_byte_pos++] = (char)b;
     if (MAX_ANDROID_MESSAGE == _byte_pos) {
-      Serial.println("Android message reached maximal length!");
-      Serial.println(AndroidMessage);
-      memset(AndroidMessage, 0, sizeof(AndroidMessage));
-      _byte_pos = 0;
+      //Serial.println("Android message reached maximal length!");
+      //Serial.println(AndroidMessage);
+      //memset(AndroidMessage, 0, sizeof(AndroidMessage));
+      //_byte_pos = 0;
+      break;
     }
   }
   return _byte_pos;
 }
+

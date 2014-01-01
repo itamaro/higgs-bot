@@ -1,11 +1,11 @@
-#include <Servo.h>
+  #include <Servo.h>
 #include "ArmLogic.h"
 #include "MovementLogic.h"
 #include "SimpleControl.h"
 #include "higgsmodem.h"
 
 RobotArm Arm(6);
-MotorController MtrCtrl(10, 3, 9, 8, 5, 11, 12);
+MotorController MtrCtrl(10, 3, 11, 12, 5, 9, 8);
 RobotMovement Mvmnt(&MtrCtrl);
 
 SimpleControl Knife(7);
@@ -13,7 +13,7 @@ SimpleControl Nitro(4);
 
 // Speed levels
 int WheelSpeeds[] = {0, 36, 72, 108, 144, 180, 216, 255};
-int ArmSpeeds[] = {0, 12, 24, 36, 48, 60, 72, 90};
+int ArmSpeeds[] = {0, 5, 10, 14, 20, 25, 35, 50};
 
 void setup()
 {
@@ -24,11 +24,18 @@ void setup()
     
     Knife.Off();
     Nitro.Off();
+    //S/erial.begin(9600);
+   // Serial.println("Go Higgs!");
 }
 
 void loop()
 {
     int msg_len = getAndroidMessage();
+    //Serial.print("Message len=");
+    //Serial.println(msg_len, DEC);
+    //for (int i=0; i < msg_len; ++i) {
+    //  Serial.println((unsigned char)AndroidMessage[i], HEX);
+    //}
     
     if (msg_len != 2 && msg_len != 1)
     {
@@ -62,15 +69,15 @@ void loop()
         
         int ADir = (AndroidMessage[index] & 0x80) >> 7;
         int ASpeed = (AndroidMessage[index] & 0x70) >> 4;
-        int K = (AndroidMessage[index] & 0x08) >> 3;
-        int N = (AndroidMessage[index] & 0x04) >> 2;
+        int N = (AndroidMessage[index] & 0x08) >> 4;
+        int K = (AndroidMessage[index] & 0x04) >> 2;
         int Padding = (AndroidMessage[index] & 0x03) >> 0;
         
         /****************** Handle ******************/
-        Mvmnt.MoveWheel(LeftWheel, WheelSpeeds[LSpeed], (LDir*2)-1);
-        Mvmnt.MoveWheel(RightWheel, WheelSpeeds[RSpeed], (RDir*2)-1);
-        
-        Arm.SetSpeed(ArmSpeeds[ASpeed], ADir);
+        Mvmnt.MoveWheel(LeftWheel, WheelSpeeds[LSpeed], LDir);
+        Mvmnt.MoveWheel(RightWheel, WheelSpeeds[RSpeed], RDir);
+
+        Arm.SetSpeed(ArmSpeeds[ASpeed], (ADir*2)-1);
         
         if (K == 0)
         {
