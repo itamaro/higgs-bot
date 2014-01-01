@@ -108,7 +108,7 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), StageConfigActivity.class);
                         intent.putExtra(StageConfigActivity.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
-                        intent.putExtra(StageConfigActivity.EXTRAS_GROUP_OWNER_PORT, 8990);
+                        intent.putExtra(StageConfigActivity.EXTRAS_GROUP_OWNER_PORT, 8989);
                         startActivity(intent);
                     }
                 });

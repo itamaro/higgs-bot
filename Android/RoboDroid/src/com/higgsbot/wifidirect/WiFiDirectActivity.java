@@ -1,5 +1,7 @@
 package com.higgsbot.wifidirect;
 
+import org.projectproto.objtrack.ObjTrackActivity;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -222,6 +224,10 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 							fragmentDetails.setGroupInfo(group.getNetworkName(), group.getPassphrase());
 						}
 					});
+        		return true;
+        	case R.id.start_camera:
+        		Intent intent = new Intent(getApplicationContext(), ObjTrackActivity.class);
+                startActivity(intent);
         		return true;
             default:
                 return super.onOptionsItemSelected(item);

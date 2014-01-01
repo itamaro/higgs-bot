@@ -40,7 +40,7 @@
                 android:id="@+id/btn_start_stage_config"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/start_arm_control"
+                android:text="@string/stage_config"
                 android:visibility="gone"/>
         </LinearLayout>
         <TextView
