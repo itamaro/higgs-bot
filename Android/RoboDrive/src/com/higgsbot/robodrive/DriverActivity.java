@@ -60,12 +60,12 @@ public class DriverActivity extends Activity {
 		assert Math.abs(leftSpeed) <= 7;
 		assert Math.abs(rightSpeed) <= 7;
 		// Send state over WiFi to RoboDroid
-		char wifiMsg[] = "DL??R??N?".toCharArray();
-		wifiMsg[2] = (leftSpeed >= 0 ? '+' : '-');
-		wifiMsg[3] = Integer.toString(Math.abs(leftSpeed)).charAt(0);
-		wifiMsg[5] = (rightSpeed >= 0 ? '+' : '-');
-		wifiMsg[6] = Integer.toString(Math.abs(rightSpeed)).charAt(0);
-		wifiMsg[8] = (nitro ? '+' : '-');
+		char wifiMsg[] = "L??R??N?".toCharArray();
+		wifiMsg[1] = (leftSpeed >= 0 ? '+' : '-');
+		wifiMsg[2] = Integer.toString(Math.abs(leftSpeed)).charAt(0);
+		wifiMsg[4] = (rightSpeed >= 0 ? '+' : '-');
+		wifiMsg[5] = Integer.toString(Math.abs(rightSpeed)).charAt(0);
+		wifiMsg[7] = (nitro ? '+' : '-');
 		Log.d("Driver", new String(wifiMsg));
 		mPrintWriter.println(new String(wifiMsg));
 	}
