@@ -55,7 +55,7 @@ public class Globals {
 		if (message == null) {
 			Log.d("NetworkService", "wifiMsg: null message");
 		} else {
-			Log.d("NetworkService", "wifiMsg: " + message);
+			//Log.d("NetworkService", "wifiMsg: " + message);
 			// parse WiFi message
 			int i=0;
 			while (i < message.length()) {

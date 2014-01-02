@@ -12,7 +12,8 @@ class ObjTrackView extends SampleViewBase {
 	private int mFrameSize;
 	private Bitmap mBitmap;
 	private int[] mRGBA;
-
+	private int counter = 0;
+	
     public ObjTrackView(Context context) {
         super(context);
     }
@@ -48,23 +49,58 @@ class ObjTrackView extends SampleViewBase {
     }
     
     // please, let me live even though I used this dark programming technique
-    public void messageMe(int x, int y, int r) {
-        //Log.d(VIEW_LOG_TAG, "!!! x:" + x + " y:" + y + " r:" + r);
+    public void messageMe(int x, int y, int r, int b_detection) {
+        Log.d(VIEW_LOG_TAG, "!!! x:" + x + " y:" + y + " r:" + r + " b:" + b_detection);
+    	
     	if (Globals.isAutonomousModeOn())
     	{
-	        int d = 200*45/r;
-	        int v = (d-25)*2 /30 + 3;
-	        if (x > (getFrameWidth() / 2))
+	        if (b_detection == 1)
 	        {
-	        	Log.d(VIEW_LOG_TAG, "L+4R+3");
-	        } else if (x < (getFrameWidth() / 2))
-	        {
-	        	Log.d(VIEW_LOG_TAG, "L+3R+4");
+	    		int d = 200*45/r;
+		        int v = (d-25)*2 /30 + 3;
+		        if (x > (getFrameWidth() / 2))
+		        {
+		        	Log.d(VIEW_LOG_TAG, "L+4R+3");
+		        	Globals.updateState("L+4R+3");
+		        } else if (x < (getFrameWidth() / 2))
+		        {
+		        	Log.d(VIEW_LOG_TAG, "messageMe: L+3R+4");
+		        	Globals.updateState("L+3R+4");
+		        }
+		        else
+		        {
+		        	Log.d(VIEW_LOG_TAG, "L+4R+4");
+		        	Globals.updateState("L+4R+4");
+		        }
 	        }
 	        else
 	        {
-	        	Log.d(VIEW_LOG_TAG, "L+4R+4");
+	        	//Log.d(VIEW_LOG_TAG, "noDetection");
+	        	this.noDetection();
 	        }
+    	}
+    }
+    
+    public void noDetection() {
+    	Log.d(VIEW_LOG_TAG, "noDetection " + counter);
+    	if (Globals.isAutonomous == true)
+    	{
+    		if (counter <= 30)
+    		{
+	    		Log.d(VIEW_LOG_TAG,"L-4R+4");
+	    		Globals.updateState("L-4R+4");
+	    		counter++;
+    		} 
+    		else if ((counter > 30) && (counter < 60))
+    		{
+    			Log.d(VIEW_LOG_TAG, "L+&7R+7");
+    			Globals.updateState("L+7R+7");
+	    		counter++;
+    		}
+    		else
+    		{
+    			counter = 0;
+    		}
     	}
     }
     
