@@ -1,7 +1,6 @@
 package com.higgsbot.wifidirect;
 
 import org.projectproto.objtrack.ObjTrackActivity;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,6 +35,7 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
     private BroadcastReceiver receiver = null;
 
 	private AudioModem arduinoModem = new AudioModem();
+	private final boolean alwaysBeep = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,34 +94,34 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 //            			"L-0R-0A-0N-K-"
 //            	};
 //            	int cmd=0, loop=0;
-        		//char lastSentCommand[] = {0,0};
+        		char lastSentCommand[] = {0,0};
             	while (true) {
             		if (Globals.isPlayTest()) {
             			arduinoModem.sendData("Go Higgs!".toCharArray());
             		}
             		char audioCommand[] = Globals.getAudioCommand();
-//            		if ((audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
-//            			// no state change, so don't send audio
-//            			try {
-//							Thread.sleep(20);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//            		} else {
+            		if ((!alwaysBeep) && (audioCommand[0] == lastSentCommand[0]) && (audioCommand[1] == lastSentCommand[1])) {
+            			// no state change, so don't send audio
+            			try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+            		} else {
             			// send latest state
 	                	Log.d("AudioSender", "Sending audio command 0x" + 
 	                			String.format("%02x", (byte) audioCommand[0]) + " 0x" +
 	                			String.format("%02x", (byte) audioCommand[1]));
 	        			arduinoModem.sendData(audioCommand);
 	        			// cache last sent command
-	        			//lastSentCommand[0] = audioCommand[0];
-	        			//lastSentCommand[1] = audioCommand[1];
-//            			try {
-//							Thread.sleep(100);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-            		//}
+	        			lastSentCommand[0] = audioCommand[0];
+	        			lastSentCommand[1] = audioCommand[1];
+            			try {
+							Thread.sleep(60);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+            		}
         			
 //        			// TEST CODE:
 //        			++loop;

@@ -40,11 +40,6 @@
 
         <!-- Used for transferring data after a successful connection -->
         <service android:name="com.higgsbot.wifidirect.DataTransferService" android:enabled="true" />
-
-        <activity
-            android:name="com.higgsbot.robodrive.StageConfigActivity"
-            android:label="@string/title_activity_stage_config" >
-        </activity>
     </application>
 
 </manifest>

@@ -13,16 +13,59 @@
             android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dip">
             
-        <ToggleButton
-            android:id="@+id/toggleKnife"
+        <TableRow
+            android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onKnifeToggled"
-            android:text="@string/knife_toggle"
-            android:textOff="@string/knife_toggle"
-            android:textOn="@string/knife_toggle" />
+            android:layout_height="wrap_content" >
+            
+	        <ToggleButton
+	            android:id="@+id/toggleKnife"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:onClick="onKnifeToggled"
+	            android:text="@string/knife_toggle"
+	            android:textOff="@string/knife_toggle"
+	            android:textOn="@string/knife_toggle" />
 
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/snitch_color_label" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/snitchColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/snitch_colors" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+		    
+        </TableRow>
     </TableLayout>
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startHiggs"
+        android:text="@string/start_button_label" />
 
 	<TextView
 	    android:id="@+id/txtDebugState"

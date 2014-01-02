@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -27,7 +28,7 @@ public class ArmControlActivity extends Activity {
 	TextView txtDebugState;
 	JoystickView armSpeedCtrl;
 	int armSpeed;
-	boolean knife;
+	boolean autonomous;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +48,7 @@ public class ArmControlActivity extends Activity {
 		armSpeedCtrl.setOnJostickMovedListener(_listener);
 		
 		armSpeed = 0;
-		knife = false;
-		
-		//updateRemoteState();
+		autonomous = false;
 	}
 
 	@Override
@@ -61,16 +60,35 @@ public class ArmControlActivity extends Activity {
 	
 	private void updateRemoteState() {
 		txtDebugState.setText("Arm: " + Integer.toString(armSpeed) +
-				", Knife: " + (knife ? "On" : "Off"));
-		assert Math.abs(armSpeed) <= 7;
+				", Autonomous: " + (autonomous ? "On" : "Off"));
+		if (armSpeed > 7) {
+			armSpeed = 7;
+		}
 		// Send speeds over WiFi to RoboDroid
 		char wifiMsg[] = "A??K?".toCharArray();
 		wifiMsg[1] = (armSpeed >= 0 ? '+' : '-');
 		wifiMsg[2] = Integer.toString(Math.abs(armSpeed)).charAt(0);
-		wifiMsg[4] = (knife ? '+' : '-');
+		wifiMsg[4] = (autonomous ? '+' : '-');
 		Log.d("Arm", new String(wifiMsg));
 		mPrintWriter.println(new String(wifiMsg));
 	}
+	
+	public void onKnifeToggled(View view) {
+		// Is the toggle on?
+	    autonomous = ((ToggleButton) view).isChecked();
+	    updateRemoteState();
+	}
+
+    public void startHiggs(View view) {
+    	String snitchColor = ((Spinner) findViewById(R.id.snitchColor)).getSelectedItem().toString();
+    	if ("Red".equals(snitchColor)) {
+    		Log.d("StageConfig", "Start with red snitch");
+    		mPrintWriter.println("S0K" + (autonomous ? '+' : '-'));
+    	} else {
+    		Log.d("StageConfig", "Start with black snitch");
+    		mPrintWriter.println("S1K" + (autonomous ? '+' : '-'));
+    	}
+    }
 
 	private JoystickMovedListener _listener = new JoystickMovedListener() {
 
@@ -91,12 +109,6 @@ public class ArmControlActivity extends Activity {
         	updateRemoteState();
         };
 	};
-	
-	public void onKnifeToggled(View view) {
-		// Is the toggle on?
-	    knife = ((ToggleButton) view).isChecked();
-	    updateRemoteState();
-	}
 
 	class ClientThread implements Runnable {
 		@Override

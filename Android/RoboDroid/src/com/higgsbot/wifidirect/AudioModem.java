@@ -29,12 +29,11 @@ public class AudioModem {
         // start audio
         audioTrack.play();
         
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-            	
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//            }
+//        }).start();
 	}
     
     private short[] generatePaddedSineCycle(int amp, double freq, int sr, int prepad, int postpad) {
@@ -80,7 +79,7 @@ public class AudioModem {
     	assert audioRef.length == audioLow.length;
     	
         // sync
-        for (int i=0; i < 3; ++i) {
+        for (int i=0; i < 2; ++i) {
             sendByteToArduino((byte) 0xa5, audioTrack);
         	//audioTrack.write(audioRef, 0, audioRef.length);
         }
@@ -93,14 +92,10 @@ public class AudioModem {
     	// send termination
         sendByteToArduino((byte) 0x00, audioTrack);
     	
-    	// post sync
-        for (int i=0; i < 6; ++i) {
-            sendByteToArduino((byte) 0xa5, audioTrack);
-        	//audioTrack.write(audioRef, 0, audioRef.length);
-        }
-
-    	// stop audio
-        //audioTrack.stop();
-        //audioTrack.release();
+//    	// post sync
+//        for (int i=0; i < 6; ++i) {
+//            sendByteToArduino((byte) 0xa5, audioTrack);
+//        	//audioTrack.write(audioRef, 0, audioRef.length);
+//        }
     }
 }

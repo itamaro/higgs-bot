@@ -28,7 +28,7 @@
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
     <string name="nitro_toggle">Nitro</string>
-    <string name="knife_toggle">Knife</string>
+    <string name="knife_toggle">Autonomous</string>
     <string name="title_activity_stage_config">Stage Configuration</string>
     <string name="snitch_color_label">Snitch Color</string>
     <string-array name="snitch_colors">

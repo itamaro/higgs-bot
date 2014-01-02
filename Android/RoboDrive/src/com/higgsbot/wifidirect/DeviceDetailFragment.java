@@ -23,7 +23,6 @@ import com.higgsbot.wifidirect.DeviceListFragment.DeviceActionListener;
 import com.higgsbot.robodrive.ArmControlActivity;
 import com.higgsbot.robodrive.DriverActivity;
 import com.higgsbot.robodrive.R;
-import com.higgsbot.robodrive.StageConfigActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,18 +99,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
                         startActivity(intent);
                     }
                 });
-        
-        mContentView.findViewById(R.id.btn_start_stage_config).setOnClickListener(
-                new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), StageConfigActivity.class);
-                        intent.putExtra(StageConfigActivity.EXTRAS_GROUP_OWNER_ADDRESS, info.groupOwnerAddress.getHostAddress());
-                        intent.putExtra(StageConfigActivity.EXTRAS_GROUP_OWNER_PORT, 8989);
-                        startActivity(intent);
-                    }
-                });
         return mContentView;
     }
 
@@ -137,7 +124,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         if (info.groupFormed) { 
             mContentView.findViewById(R.id.btn_start_driver).setVisibility(View.VISIBLE);
             mContentView.findViewById(R.id.btn_start_arm_control).setVisibility(View.VISIBLE);
-            mContentView.findViewById(R.id.btn_start_stage_config).setVisibility(View.VISIBLE);
         }
 
         // hide the connect button
@@ -193,7 +179,6 @@ public class DeviceDetailFragment extends Fragment implements ConnectionInfoList
         view.setText(R.string.empty);
         mContentView.findViewById(R.id.btn_start_driver).setVisibility(View.GONE);
         mContentView.findViewById(R.id.btn_start_arm_control).setVisibility(View.GONE);
-        mContentView.findViewById(R.id.btn_start_stage_config).setVisibility(View.GONE);
         this.getView().setVisibility(View.GONE);
     }
 

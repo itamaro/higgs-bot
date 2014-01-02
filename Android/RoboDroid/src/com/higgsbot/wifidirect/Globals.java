@@ -14,7 +14,8 @@ public class Globals {
 	private static boolean knife=false;
 	private static boolean test=false;
 	private static SnitchColorEnum snitch_color;
-	public static boolean isAutonomous = false;
+	private static boolean isAutonomous=false;
+	private static boolean isOn=false;
 	
 	public static boolean isPlayTest() {
 		if (test) {
@@ -83,9 +84,8 @@ public class Globals {
 					i += 2;
 					break;
 				case 'K':
-					isAutonomous = false;
-					// set knife state
-					knife = (message.charAt(i+1) == '+');
+					// set autonomous state
+					isAutonomous = (message.charAt(i+1) == '+');
 					i += 2;
 					break;
 				case 'T':
@@ -94,7 +94,7 @@ public class Globals {
 					++i;
 					break;
 				case 'S':
-					isAutonomous = true;
+					isOn = true;
 					snitch_color = (message.charAt(i+1) == '0' ? SnitchColorEnum.Red : SnitchColorEnum.Black);
 					i += 2;
 					break;
@@ -104,5 +104,9 @@ public class Globals {
 				}
 			}
 		}
+	}
+
+	public static boolean isAutonomousModeOn() {
+		return isOn && isAutonomous;
 	}
 }

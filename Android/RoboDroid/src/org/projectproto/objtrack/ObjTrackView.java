@@ -50,7 +50,7 @@ class ObjTrackView extends SampleViewBase {
     // please, let me live even though I used this dark programming technique
     public void messageMe(int x, int y, int r) {
         //Log.d(VIEW_LOG_TAG, "!!! x:" + x + " y:" + y + " r:" + r);
-    	if (Globals.isAutonomous == true)
+    	if (Globals.isAutonomousModeOn())
     	{
 	        int d = 200*45/r;
 	        int v = (d-25)*2 /30 + 3;
