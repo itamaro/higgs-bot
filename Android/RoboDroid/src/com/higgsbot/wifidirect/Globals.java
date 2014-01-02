@@ -14,7 +14,7 @@ public class Globals {
 	private static boolean knife=false;
 	private static boolean test=false;
 	private static SnitchColorEnum snitch_color;
-	public static boolean isAutonomous = false;
+	public static boolean isAutonomous = true;
 	
 	public static boolean isPlayTest() {
 		if (test) {
@@ -54,7 +54,7 @@ public class Globals {
 		if (message == null) {
 			Log.d("NetworkService", "wifiMsg: null message");
 		} else {
-			Log.d("NetworkService", "wifiMsg: " + message);
+			//Log.d("NetworkService", "wifiMsg: " + message);
 			// parse WiFi message
 			int i=0;
 			while (i < message.length()) {

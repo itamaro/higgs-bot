@@ -109,9 +109,9 @@ public class WiFiDirectActivity extends Activity implements ChannelListener, Dev
 //						}
 //            		} else {
             			// send latest state
-	                	Log.d("AudioSender", "Sending audio command 0x" + 
-	                			String.format("%02x", (byte) audioCommand[0]) + " 0x" +
-	                			String.format("%02x", (byte) audioCommand[1]));
+	                	//Log.d("AudioSender", "Sending audio command 0x" + 
+	                	//		String.format("%02x", (byte) audioCommand[0]) + " 0x" +
+	                	//		String.format("%02x", (byte) audioCommand[1]));
 	        			arduinoModem.sendData(audioCommand);
 	        			// cache last sent command
 	        			//lastSentCommand[0] = audioCommand[0];

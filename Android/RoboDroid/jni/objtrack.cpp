@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_org_projectproto_objtrack_ObjTrackView_CircleObjectT
     jint*  _bgra = env->GetIntArrayElements(bgra, 0);
 
 	jclass cls = env->GetObjectClass(obj);  // instead of FindClass
-	jmethodID mid = env->GetMethodID(cls, "messageMe", "(III)V");
+	jmethodID mid = env->GetMethodID(cls, "messageMe", "(IIII)V");
  		
     Mat mYuv(height + height/2, width, CV_8UC1, (unsigned char *)_yuv);
     Mat mBgra(height, width, CV_8UC4, (unsigned char *)_bgra);
@@ -54,17 +54,21 @@ JNIEXPORT void JNICALL Java_org_projectproto_objtrack_ObjTrackView_CircleObjectT
     // draw found circles
     //for (int i = 0; i<circles->total; i++)
     char buffer[20];
+    
+    if (circles->total == 0)
+    {
+    	env->CallVoidMethod(obj, mid, circles->total, 0, 0, 0);
+    }
+    
     for (int i = 0; i<circles->total && i<3; i++) // max 3 circles
     {
         float* p = (float*)cvGetSeqElem( circles, i );
 		int x = p[0];
 		int y = p[1];
-		int r = p[2];
- 		env->CallVoidMethod(obj, mid, x, y, r);
+		int r = p[2];		
 		
-	    //jmethodID messageMe = env->GetMethodID(env, clazz, "messageMe", "(Ljava/lang/String;)Ljava/lang/String;");
-	    //env->CallVoidMethod(thiz, messageMe, buffer);
-    
+ 		env->CallVoidMethod(obj, mid, x, y, r, 1);
+	    
         //putText(mBgra, buffer, Point(100,100), CV_FONT_HERSHEY_COMPLEX, 1, Scalar(255, 0, 0));
         circle(mBgra, Point(p[0],p[1]), 3, Scalar(0,255,0,255), 2);
         circle(mBgra, Point(p[0],p[1]), p[2], Scalar(0,0,255,255), 4);
