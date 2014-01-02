@@ -83,7 +83,7 @@ class ObjTrackView extends SampleViewBase {
     
     public void noDetection() {
     	Log.d(VIEW_LOG_TAG, "noDetection " + counter);
-    	if (Globals.isAutonomous == true)
+    	if (Globals.isAutonomousModeOn())
     	{
     		if (counter <= 30)
     		{
